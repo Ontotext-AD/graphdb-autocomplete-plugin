@@ -3,7 +3,9 @@ package com.ontotext.trree.plugin.autocomplete;
 import com.google.common.primitives.Longs;
 import com.ontotext.trree.plugin.autocomplete.lucene.LocalNameAnalyzer;
 import com.ontotext.trree.sdk.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.index.IndexFormatTooOldException;
 import org.apache.lucene.search.suggest.InputIterator;
 import org.apache.lucene.search.suggest.Lookup;
 import org.apache.lucene.search.suggest.analyzing.AnalyzingInfixSuggester;
@@ -42,7 +44,7 @@ class AutocompleteIndex {
     private Path indexDir;
     private LocalNameAnalyzer analyzer;
     private AnalyzingInfixSuggester suggester;
-    private final AutocompletePlugin autocompletePlugin;
+    private AutocompletePlugin autocompletePlugin;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private Future<?> buildIndexTask;
     private Throwable error;
@@ -113,7 +115,18 @@ class AutocompleteIndex {
             }
 
         } catch (IOException e) {
-            throw new PluginException("Could not create index directory: " + indexDir, e);
+            if (e instanceof IndexFormatTooOldException) {
+                try {
+                    FileUtils.deleteDirectory(autocompletePlugin.getDataDir());
+                    this.autocompletePlugin.isPluginEnabled = false;
+                    restartLuceneConfig();
+                    LOGGER.warn("Upgrade detected. Current autocomplete index is created with previous GraphDB version. Please recreate index");
+                } catch (IOException ex) {
+                    throw new PluginException("Could not delete autocomplete index directory: " + autocompletePlugin.getDataDir(), ex);
+                }
+            } else {
+                throw new PluginException("Could not create index directory: " + indexDir, e);
+            }
         } catch (Exception e1) {
             LOGGER.error("Could not create suggester", e1);
             throw new PluginException("Could not create suggester", e1);
