@@ -74,6 +74,7 @@ public class AutocompletePlugin extends PluginBase
 
     @Override
     public void initialize(InitReason initReason, PluginConnection pluginConnection) {
+        AutocompletePluginUtils.migrateConfig(getDataDir(), getLogger());
         pluginConfig = loadConfig(getDataDir());
 
         isPluginEnabled = isPluginEnabledFromProperties(pluginConfig);
