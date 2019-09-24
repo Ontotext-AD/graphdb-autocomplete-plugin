@@ -1,6 +1,7 @@
 # GraphDB Autocomplete Plugin
 
-This is the GraphDB Autocomplete plugin.
+This is the GraphDB Autocomplete plugin. More information about it is available in the GraphDB documentation here:
+http://graphdb.ontotext.com/documentation/enterprise/autocomplete-index.html
 
 ## Building the plugin
 
