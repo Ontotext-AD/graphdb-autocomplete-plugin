@@ -117,6 +117,9 @@ class AutocompleteIndex {
         } catch (IOException e) {
             if (e instanceof IndexFormatTooOldException) {
                 try {
+                    // If created index is older version during creation of suggester
+                    // is thrown IndexFormatTooOldException, directory and settings should
+                    // be cleared and afterwards restarted with current Lucene version
                     FileUtils.deleteDirectory(autocompletePlugin.getDataDir());
                     this.autocompletePlugin.isPluginEnabled = false;
                     restartLuceneConfig();
