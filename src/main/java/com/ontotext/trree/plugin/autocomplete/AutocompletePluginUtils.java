@@ -207,11 +207,23 @@ class AutocompletePluginUtils {
         properties.setProperty(propertyName, propertiesValue);
     }
 
-    public static Path resolveConfigDirectory(File pluginDataDir, boolean legacy) {
+    /**
+     *  This method will return path to config.properties file, based on
+     *  legacy parameter. On new version should be changed to "v" + (legacy ? LEGACY_VERSION : VERSION)
+     * @param pluginDataDir
+     * @param legacy
+     * @return
+     */
+    static Path resolveConfigDirectory(File pluginDataDir, boolean legacy) {
         return pluginDataDir.toPath().resolve(legacy ? LEGACY_VERSION : "v" + VERSION);
     }
 
-    public static Path resolveIndexDirectory(File pluginDataDir) {
+    /**
+     *  Returns current version index directory
+     * @param pluginDataDir
+     * @return
+     */
+    static Path resolveIndexDirectory(File pluginDataDir) {
         return pluginDataDir.toPath().resolve("v" + VERSION).resolve("index");
     }
 }
