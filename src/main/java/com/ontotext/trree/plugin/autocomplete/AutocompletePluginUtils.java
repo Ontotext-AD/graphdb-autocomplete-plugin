@@ -25,7 +25,7 @@ class AutocompletePluginUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(AutocompletePluginUtils.class);
 
-    private static final String VERSION = "1";
+    private static final String VERSION = "2";
 
     private static final String LEGACY_VERSION = "";
 
