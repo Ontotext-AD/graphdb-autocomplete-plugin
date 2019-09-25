@@ -52,7 +52,7 @@ class AutocompletePluginUtils {
                     Properties properties = new Properties();
                     loadPropertyFile(properties, legacyConfigFile);
                     if (isPluginEnabledFromProperties(properties)) {
-                        logger.info("Upgrade detected. Index is created with previous GraphDB version. Recreate index");
+                        logger.info("Detected incompatible index from a previous version. Please rebuild the index manually.");
                         setPluginEnabledInProperties(properties, false);
                     }
                     updatePluginConfiguration(resolveConfigDirectory(pluginDataDir, false).toFile(), properties);
