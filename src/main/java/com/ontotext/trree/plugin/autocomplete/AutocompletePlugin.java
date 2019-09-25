@@ -316,7 +316,7 @@ public class AutocompletePlugin extends PluginBase
         setActualShouldIndexIRIsInProperties(pluginConfig, configuredShouldIndexIRIs);
         setConfiguredLabelsInProperties(pluginConfig, configuredLabelConfigs);
         setActualLabelsInProperties(pluginConfig, labelConfigs);
-        updatePluginConfiguration(getDataDir(), pluginConfig);
+        updatePluginConfiguration(AutocompletePluginUtils.resolveConfigDirectory(getDataDir(), false).toFile(), pluginConfig);
     }
 
     private LabelConfig[] labelConfigMapToArray(Map<IRI, LabelConfig> labels) {

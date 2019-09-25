@@ -207,7 +207,7 @@ class AutocompletePluginUtils {
         properties.setProperty(propertyName, propertiesValue);
     }
 
-    private static Path resolveConfigDirectory(File pluginDataDir, boolean legacy) {
+    public static Path resolveConfigDirectory(File pluginDataDir, boolean legacy) {
         return pluginDataDir.toPath().resolve(legacy ? LEGACY_VERSION : "v" + VERSION);
     }
 
