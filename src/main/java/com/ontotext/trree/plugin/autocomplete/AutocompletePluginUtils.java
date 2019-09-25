@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,6 +24,10 @@ import java.util.stream.Collectors;
 class AutocompletePluginUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(AutocompletePluginUtils.class);
+
+    private static final String VERSION = "2";
+
+    private static final String LEGACY_VERSION = "";
 
     private static final ValueFactory VF = SimpleValueFactory.getInstance();
 
@@ -37,6 +43,26 @@ class AutocompletePluginUtils {
 
     public static final String AUTOCOMPLETE_ACTUAL_LABELS_PROPERTY = "autocomplete.labels.actual";
 
+    public static void migrateConfig(File pluginDataDir, Logger logger) {
+        Path configPath = resolveConfigDirectory(pluginDataDir, false).resolve(PLUGIN_CONFIG_FILENAME);
+        if (!Files.exists(configPath)) {
+            File legacyConfigFile = resolveConfigDirectory(pluginDataDir, true).resolve(PLUGIN_CONFIG_FILENAME).toFile();
+            if (Files.isReadable(legacyConfigFile.toPath())) {
+                try {
+                    Properties properties = new Properties();
+                    loadPropertyFile(properties, legacyConfigFile);
+                    if (isPluginEnabledFromProperties(properties)) {
+                        logger.info("Detected incompatible index from a previous version. Please rebuild the index manually.");
+                        setPluginEnabledInProperties(properties, false);
+                    }
+                    updatePluginConfiguration(resolveConfigDirectory(pluginDataDir, false).toFile(), properties);
+                } catch (IOException e) {
+                    LOG.error("Cannot load legacy configuration file!", e);
+                }
+            }
+        }
+    }
+
     /**
      * Load plugin configuration from file or defaults.
      *
@@ -44,7 +70,7 @@ class AutocompletePluginUtils {
      */
     public static Properties loadConfig(File pluginDataDir) {
         Properties properties = new Properties();
-        File pluginConfigFile = new File(pluginDataDir, PLUGIN_CONFIG_FILENAME);
+        File pluginConfigFile = resolveConfigDirectory(pluginDataDir, false).resolve(PLUGIN_CONFIG_FILENAME).toFile();
 
         boolean wasLoaded = false;
         if (pluginConfigFile.exists()) {
@@ -179,5 +205,25 @@ class AutocompletePluginUtils {
                 .collect(Collectors.joining("\n"));
 
         properties.setProperty(propertyName, propertiesValue);
+    }
+
+    /**
+     *  This method will return path to config.properties file, based on
+     *  legacy parameter. On new version should be changed to "v" + (legacy ? LEGACY_VERSION : VERSION)
+     * @param pluginDataDir
+     * @param legacy
+     * @return
+     */
+    static Path resolveConfigDirectory(File pluginDataDir, boolean legacy) {
+        return pluginDataDir.toPath().resolve(legacy ? LEGACY_VERSION : "v" + VERSION);
+    }
+
+    /**
+     *  Returns current version index directory
+     * @param pluginDataDir
+     * @return
+     */
+    static Path resolveIndexDirectory(File pluginDataDir) {
+        return pluginDataDir.toPath().resolve("v" + VERSION).resolve("index");
     }
 }

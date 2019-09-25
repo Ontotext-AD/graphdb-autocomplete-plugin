@@ -94,7 +94,7 @@ class AutocompleteIndex {
     }
 
     private void initLuceneConfig() {
-        indexDir = autocompletePlugin.getDataDir().toPath().resolve("index");
+        indexDir = AutocompletePluginUtils.resolveIndexDirectory(autocompletePlugin.getDataDir());
         try {
             if (Files.exists(indexDir) && !Files.isDirectory(indexDir)) {
                 // Path exists but isn't a directory. Delete it.

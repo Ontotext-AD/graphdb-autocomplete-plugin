@@ -74,6 +74,7 @@ public class AutocompletePlugin extends PluginBase
 
     @Override
     public void initialize(InitReason initReason, PluginConnection pluginConnection) {
+        AutocompletePluginUtils.migrateConfig(getDataDir(), getLogger());
         pluginConfig = loadConfig(getDataDir());
 
         isPluginEnabled = isPluginEnabledFromProperties(pluginConfig);
@@ -315,7 +316,7 @@ public class AutocompletePlugin extends PluginBase
         setActualShouldIndexIRIsInProperties(pluginConfig, configuredShouldIndexIRIs);
         setConfiguredLabelsInProperties(pluginConfig, configuredLabelConfigs);
         setActualLabelsInProperties(pluginConfig, labelConfigs);
-        updatePluginConfiguration(getDataDir(), pluginConfig);
+        updatePluginConfiguration(AutocompletePluginUtils.resolveConfigDirectory(getDataDir(), false).toFile(), pluginConfig);
     }
 
     private LabelConfig[] labelConfigMapToArray(Map<IRI, LabelConfig> labels) {
