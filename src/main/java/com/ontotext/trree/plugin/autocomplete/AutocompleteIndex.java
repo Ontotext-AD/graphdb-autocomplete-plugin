@@ -231,13 +231,13 @@ class AutocompleteIndex {
                 try {
                     synchronized (autocompletePlugin) {
                         autocompletePlugin.updateActualConfig(threadsafeEntities);
-
+                        long start = System.currentTimeMillis();
                         LOGGER.info("Start Building Index..");
 
                         List<InputIterator> iterators = new ArrayList<>();
 
                         if (autocompletePlugin.actualShouldIndexIRIs) {
-                            iterators.add(new EntitiesIterator(threadsafeEntities, that));
+                            iterators.add(new EntitiesIterator(threadsafeEntities, threadsafeStatements, that));
                         }
 
                         for (LabelConfig labelConfig : autocompletePlugin.labelConfigs) {
@@ -262,7 +262,7 @@ class AutocompleteIndex {
                         } else {
                             commitAndRefresh();
                             hasBuiltIndex = true;
-                            LOGGER.info("Index built. Ready to use!");
+                            LOGGER.info("Index built in {}ms. Ready to use!", System.currentTimeMillis() - start);
                         }
                     }
                 } catch (Exception e) {

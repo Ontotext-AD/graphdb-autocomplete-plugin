@@ -15,6 +15,10 @@ import java.io.IOException;
  * (in connection with weight based on the length of the local part).
  */
 public class AutocompleteSuggester extends BlendedInfixSuggester {
+
+    private final static int MAX_BUFFERED_DOCS_DEFAULT = 5000;
+    private final static double RAM_BUFFER_SIZE_MB_DEFAULT = 256.0;
+
     public AutocompleteSuggester(Directory dir, Analyzer analyzer) throws IOException {
         super(dir, analyzer);
     }
@@ -30,6 +34,10 @@ public class AutocompleteSuggester extends BlendedInfixSuggester {
     @Override
     protected IndexWriterConfig getIndexWriterConfig(Analyzer indexAnalyzer, IndexWriterConfig.OpenMode openMode) {
         IndexWriterConfig iwConfig = super.getIndexWriterConfig(indexAnalyzer, openMode);
+        // Set maxBufferedDocs large enough to prevent the writer from flushing based on document count
+        iwConfig.setMaxBufferedDocs(MAX_BUFFERED_DOCS_DEFAULT);
+        //More RAM before flushing means Lucene writes larger segments to begin with which means less merging later.
+        iwConfig.setRAMBufferSizeMB(RAM_BUFFER_SIZE_MB_DEFAULT);
         // This makes close() rollback the transaction.
         iwConfig.setCommitOnClose(false);
         return iwConfig;
