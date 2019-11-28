@@ -51,6 +51,7 @@ class AutocompleteIndex {
     private boolean loadedRDFPlugin = false;
     private boolean shouldInterrupt;
     private ThreadsafePluginConnecton threadsafePluginConnecton;
+    private boolean isRepositoryCleared;
 
     // TODO: Check why this was needed
     static final Set<String> SPECIAL_ENTITIES = new HashSet<String>() {{
@@ -480,5 +481,13 @@ class AutocompleteIndex {
         boolean isBetterThan(Result other) {
             return (this.isLabel && !other.isLabel) || (this.isLabel == other.isLabel && this.highlight.length() < other.highlight.length());
         }
+    }
+
+    public boolean isRepositoryCleared() {
+        return isRepositoryCleared;
+    }
+
+    public void setRepositoryCleared(boolean repositoryCleared) {
+        isRepositoryCleared = repositoryCleared;
     }
 }

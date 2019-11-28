@@ -19,7 +19,7 @@ import static com.ontotext.trree.plugin.autocomplete.AutocompletePluginUtils.*;
  */
 public class AutocompletePlugin extends PluginBase
         implements PatternInterpreter, UpdateInterpreter, PluginDependency, StatelessPlugin,
-                    EntityListener, PluginTransactionListener, StatementListener {
+                    EntityListener, PluginTransactionListener, StatementListener, ClearInterpreter {
     private static final ValueFactory VF = SimpleValueFactory.getInstance();
 
     private static final int RESULTS_COUNT = 100;
@@ -384,5 +384,15 @@ public class AutocompletePlugin extends PluginBase
     @Override
     public void transactionAbortedByUser(PluginConnection pluginConnection) {
         autocompleteUpdateLister.transactionAbortedByUser(pluginConnection);
+    }
+
+    @Override
+    public void beforeClear(long context, PluginConnection pluginConnection) {
+        // do nothing
+    }
+
+    @Override
+    public void afterClear(long context, PluginConnection pluginConnection) {
+        autocompleteIndex.setRepositoryCleared(context == 0);
     }
 }
