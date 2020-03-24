@@ -58,7 +58,7 @@ class LabelsIterator implements InputIterator, AutoCloseable, Closeable {
     public BytesRef next() throws IOException {
         while (statementIterator.next() && !autocompleteIndex.isShouldInterrupt()) {
             currentSubject = statementIterator.subject;
-            if (entities.getType(currentSubject) == Entities.Type.URI) {
+            if (entities.getType(currentSubject) == Entities.Type.URI  || entities.getType(currentSubject) == Entities.Type.TRIPLE) {
                 String language = entities.getLanguage(statementIterator.object);
                 if (!labelConfig.languageMatches(language)) {
                     continue;

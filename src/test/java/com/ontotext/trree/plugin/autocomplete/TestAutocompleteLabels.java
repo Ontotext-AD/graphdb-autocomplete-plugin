@@ -4,6 +4,7 @@ import org.eclipse.rdf4j.model.vocabulary.RDFS;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -12,6 +13,12 @@ import static org.junit.Assert.assertEquals;
  * Tests basic indexing/removal of labels.
  */
 public class TestAutocompleteLabels extends AutocompletePluginTestBase {
+
+    private static final List<String> EXPECTED_SUGGESTIONS = Arrays.asList(
+            "urn:beta; <b>This</b> is beta! &lt;urn:beta&gt;",
+            "urn:gamma; <b>This</b> is gamma! &lt;urn:gamma&gt;",
+            "urn:alpha; <b>This</b> is alpha! &lt;urn:alpha&gt;"
+            );
     @Parameterized.Parameters(name = "useAskControl = {0}")
     public static List<Object[]> getParams() {
         return AutocompletePluginTestBase.getParams();
@@ -38,6 +45,7 @@ public class TestAutocompleteLabels extends AutocompletePluginTestBase {
     public void testValidSuggestions() throws Exception {
         List<String> results = executeQueryAndGetResults(";this");
         assertEquals(3, results.size());
+        assertEquals(EXPECTED_SUGGESTIONS, results);
 
         results = executeQueryAndGetResults(";this is");
         assertEquals(3, results.size());

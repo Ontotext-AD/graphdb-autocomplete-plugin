@@ -13,7 +13,10 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.BytesRefBuilder;
 import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Triple;
 import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.rio.helpers.NTriplesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -376,7 +379,7 @@ class AutocompleteIndex {
             throw new PluginException("Could not lookup results. Try index rebuild. ", e1);
         }
 
-        Map<IRI, Result> resultEntities = new LinkedHashMap<>();
+        Map<String, Result> resultEntities = new LinkedHashMap<>();
         for (Lookup.LookupResult result : results) {
             // TODO: old byte array, 64 bytes
             if (result.payload.bytes.length == 0) {
@@ -389,15 +392,15 @@ class AutocompleteIndex {
                 // Value might be missing because we indexed but the entity was rolled back.
                 continue;
             }
-            if (!(val instanceof IRI)) {
-                LOGGER.error("Oops, found a non URI in results. This should not happen: " + id + " => " + val);
+            if (!(val instanceof IRI || val instanceof Triple)) {
+                LOGGER.error("Oops, found a non URI or Triple in results. This should not happen: " + id + " => " + val);
                 assert false;
                 continue;
             }
-            Result newResult = new Result(id, (IRI) val, result.highlightKey.toString(), result.payload.bytes[8] != 0);
-            Result previousResult = resultEntities.get(newResult.iri);
+            Result newResult = new Result(id, (Resource) val, result.highlightKey.toString(), result.payload.bytes[8] != 0);
+            Result previousResult = resultEntities.get(newResult.resource.stringValue());
             if (previousResult == null || newResult.isBetterThan(previousResult)) {
-                resultEntities.put(newResult.iri, newResult);
+                resultEntities.put(newResult.resource.stringValue(), newResult);
             }
         }
         return resultEntities.values();
@@ -461,18 +464,18 @@ class AutocompleteIndex {
 
     static class Result {
         long id;
-        IRI iri;
+        Resource resource;
         String highlight;
         boolean isLabel;
 
-        Result(long id, IRI iri, String highlight, boolean isLabel) {
+        Result(long id, Resource resource, String highlight, boolean isLabel) {
             this.id = id;
-            this.iri = iri;
+            this.resource = resource;
             this.isLabel = isLabel;
             if (isLabel) {
-                this.highlight = highlight + " <" + iri + ">";
-            } else {
-                this.highlight = iri.getNamespace() + highlight;
+                this.highlight = highlight + " " + NTriplesUtil.toNTriplesString(resource);
+            } else if (resource instanceof IRI){
+                this.highlight = ((IRI) resource).getNamespace() + highlight;
             }
             this.highlight = AutocompleteSuggester.htmlifyHighlight(this.highlight);
         }

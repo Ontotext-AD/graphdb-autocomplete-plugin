@@ -8,7 +8,7 @@
     <version>4.0-SNAPSHOT</version>
 
     <properties>
-        <graphdb.version>9.0.0-TR16</graphdb.version>
+        <graphdb.version>9.2.0-RC2</graphdb.version>
 
         <java.level>1.8</java.level>
 

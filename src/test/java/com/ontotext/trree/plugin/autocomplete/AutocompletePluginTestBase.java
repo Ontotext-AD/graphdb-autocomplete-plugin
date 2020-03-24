@@ -4,6 +4,7 @@ import com.ontotext.test.functional.base.SingleRepositoryFunctionalTest;
 import com.ontotext.test.utils.StandardUtils;
 import org.eclipse.rdf4j.common.io.IOUtil;
 import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Triple;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.query.*;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
@@ -11,6 +12,7 @@ import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.repository.config.RepositoryConfig;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFParseException;
+import org.eclipse.rdf4j.rio.helpers.NTriplesUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -160,9 +162,9 @@ public abstract class AutocompletePluginTestBase extends SingleRepositoryFunctio
 				Binding s = next.getBinding("s");
 				Binding g = next.getBinding("g");
 				if (g != null) {
-					foundSubjects.add(s.getValue().stringValue() + "; " + g.getValue().stringValue());
+					foundSubjects.add(asNTripleString(s.getValue()) + "; " + asNTripleString(g.getValue()));
 				} else {
-					foundSubjects.add(s.getValue().stringValue());
+					foundSubjects.add(asNTripleString(s.getValue()));
 				}
 			}
 		} finally {
@@ -171,47 +173,11 @@ public abstract class AutocompletePluginTestBase extends SingleRepositoryFunctio
 		return foundSubjects;
 	}
 
-	/**
-	 * Gets all projected values of the query as key-value pairs (binding-collection of its values)
-	 *
-	 * @param tqr {@link TupleQueryResult} instance which contains a list of all projected values
-	 * @return query results a map of (binding-collection of its values)
-	 */
-	public Map<String, List<String>> getResultsForAllQueryBindings(TupleQueryResult tqr) {
-		Map<String, List<String>> resultMap = new HashMap<>();
-
-		String currentBinding = null;
-		try {
-			List<String> bindings = tqr.getBindingNames();
-			for (String binding : bindings) {
-				resultMap.put(binding, new ArrayList<>());
-			}
-
-			while (tqr.hasNext()) {
-				BindingSet bs = tqr.next();
-
-				for (Map.Entry<String, List<String>> entry : resultMap.entrySet()) {
-					currentBinding = entry.getKey();
-					List<String> values = entry.getValue();
-					Value value = bs.getValue(currentBinding);
-					if (value == null) continue;
-					values.add(value.stringValue());
-				}
-			}
-		} catch (QueryEvaluationException e) {
-			LOG.error("Failed to get results for binding ?{}. Query results corrupted?!", currentBinding);
-		} finally {
-			closeQueryResult(tqr);
+	private String asNTripleString(Value r) {
+		if (r instanceof Triple) {
+			return NTriplesUtil.toNTriplesString(r);
 		}
-		return resultMap;
-	}
-
-	private void closeQueryResult(TupleQueryResult tqr) {
-		try {
-			tqr.close();
-		} catch (QueryEvaluationException e) {
-			LOG.error("Error closing tuple query result!");
-		}
+		return r.stringValue();
 	}
 
 	void executeQueryAndVerifyResults(String pluginQuery, int expected) throws RepositoryException, MalformedQueryException, QueryEvaluationException {
