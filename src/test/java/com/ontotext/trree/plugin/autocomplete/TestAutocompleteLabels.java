@@ -13,11 +13,11 @@ import static org.junit.Assert.assertEquals;
  * Tests basic indexing/removal of labels.
  */
 public class TestAutocompleteLabels extends AutocompletePluginTestBase {
-
+    // "This" intentionally misspelled as "Dhis" to avoid interference from well known entities
     private static final List<String> EXPECTED_SUGGESTIONS = Arrays.asList(
-            "urn:beta; <b>This</b> is beta! &lt;urn:beta&gt;",
-            "urn:gamma; <b>This</b> is gamma! &lt;urn:gamma&gt;",
-            "urn:alpha; <b>This</b> is alpha! &lt;urn:alpha&gt;"
+            "urn:beta; <b>Dhis</b> is beta! &lt;urn:beta&gt;",
+            "urn:gamma; <b>Dhis</b> is gamma! &lt;urn:gamma&gt;",
+            "urn:alpha; <b>Dhis</b> is alpha! &lt;urn:alpha&gt;"
             );
     @Parameterized.Parameters(name = "useAskControl = {0}")
     public static List<Object[]> getParams() {
@@ -43,19 +43,19 @@ public class TestAutocompleteLabels extends AutocompletePluginTestBase {
     }
 
     public void testValidSuggestions() throws Exception {
-        List<String> results = executeQueryAndGetResults(";this");
+        List<String> results = executeQueryAndGetResults(";dhis");
         assertEquals(3, results.size());
         assertEquals(EXPECTED_SUGGESTIONS, results);
 
-        results = executeQueryAndGetResults(";this is");
+        results = executeQueryAndGetResults(";dhis is");
         assertEquals(3, results.size());
 
-        results = executeQueryAndGetResults(";this    is");
+        results = executeQueryAndGetResults(";dhis    is");
         assertEquals(3, results.size());
 
         removeSomeData();
 
-        List<String> results2 = executeQueryAndGetResults(";this");
+        List<String> results2 = executeQueryAndGetResults(";dhis");
         System.out.println(String.join("\n", results2));
         assertEquals(2, results2.size());
 
@@ -63,22 +63,22 @@ public class TestAutocompleteLabels extends AutocompletePluginTestBase {
         reindex();
         insertMoreData();
 
-        List<String> results3 = executeQueryAndGetResults(";this");
+        List<String> results3 = executeQueryAndGetResults(";dhis");
         System.out.println(String.join("\n", results3));
         assertEquals(3, results3.size());
     }
 
     private void insertSomeData() {
         connection.begin();
-        connection.add(vf.createIRI("urn:alpha"), RDFS.LABEL, vf.createLiteral("This is alpha!"));
-        connection.add(vf.createIRI("urn:beta"), RDFS.LABEL, vf.createLiteral("This is beta!"));
-        connection.add(vf.createIRI("urn:gamma"), RDFS.LABEL, vf.createLiteral("This is gamma!"));
+        connection.add(vf.createIRI("urn:alpha"), RDFS.LABEL, vf.createLiteral("Dhis is alpha!"));
+        connection.add(vf.createIRI("urn:beta"), RDFS.LABEL, vf.createLiteral("Dhis is beta!"));
+        connection.add(vf.createIRI("urn:gamma"), RDFS.LABEL, vf.createLiteral("Dhis is gamma!"));
         connection.commit();
     }
 
     private void insertMoreData() {
         connection.begin();
-        connection.add(vf.createIRI("urn:delta"), vf.createIRI("urn:label"), vf.createLiteral("This is delta with alt label!", "en"));
+        connection.add(vf.createIRI("urn:delta"), vf.createIRI("urn:label"), vf.createLiteral("Dhis is delta with alt label!", "en"));
         connection.commit();
     }
 

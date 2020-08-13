@@ -190,7 +190,12 @@ public class AutocompletePlugin extends PluginBase
         long[][] resultStatements = new long[foundEntities.size()][];
         int i = 0;
         for (AutocompleteIndex.Result result : foundEntities) {
-            resultStatements[i] = new long[] {result.id, predicate, object,
+            long id = result.id;
+            if (id == 0) {
+                // Entity was indexed but not in entity pool (e.g. well known entity), register it as request entity
+                id = pluginConnection.getEntities().put(result.resource, Entities.Scope.REQUEST);
+            }
+            resultStatements[i] = new long[] {id, predicate, object,
                     pluginConnection.getEntities().put(VF.createLiteral(result.highlight), Entities.Scope.REQUEST)};
             i++;
         }

@@ -8,7 +8,7 @@
     <version>4.1-SNAPSHOT</version>
 
     <properties>
-        <graphdb.version>9.2.0-RC2</graphdb.version>
+        <graphdb.version>9.4.0-TR20</graphdb.version>
 
         <java.level>1.8</java.level>
 
@@ -120,6 +120,14 @@
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>3.0.2</version>
+            <!-- Provided by GraphDB -->
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>29.0-jre</version>
             <!-- Provided by GraphDB -->
             <scope>provided</scope>
         </dependency>

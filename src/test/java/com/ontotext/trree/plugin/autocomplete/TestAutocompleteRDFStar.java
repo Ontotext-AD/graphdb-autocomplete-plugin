@@ -22,7 +22,7 @@ public class TestAutocompleteRDFStar extends AutocompletePluginTestBase {
 
     private static final List<String> EXPECTED__RECURSIVE_SUGGESTIONS = Arrays.asList(
 
-            "<<<http://test/foo> <http://www.w3.org/2000/01/rdf-schema#label> \"moo most inner\">>; label for <b>rec</b>ursive nested triple &lt;&lt;&lt;http://test/foo&gt; &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; &quot;moo most inner&quot;&gt;&gt;"
+            "<<<http://test/foo> <http://www.w3.org/2000/01/rdf-schema#label> \"moo most inner\">>; label for <b>recur</b>sive nested triple &lt;&lt;&lt;http://test/foo&gt; &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; &quot;moo most inner&quot;&gt;&gt;"
     );
 
 
@@ -45,11 +45,8 @@ public class TestAutocompleteRDFStar extends AutocompletePluginTestBase {
 
     public void testFindIRIsByLabels() throws RepositoryException, MalformedQueryException, QueryEvaluationException {
         List<String> results = executeQueryAndGetResults(";sim");
-        assertEquals(1, results.size());
-        List<String> subResults = results.subList(0, 1);
-        assertEquals(EXPECTED_SUGGESTIONS, subResults);
-        results = executeQueryAndGetResults(";rec");
-        subResults = results.subList(0, 1);
-        assertEquals(EXPECTED__RECURSIVE_SUGGESTIONS, subResults);
+        assertEquals(EXPECTED_SUGGESTIONS, results);
+        results = executeQueryAndGetResults(";recur");
+        assertEquals(EXPECTED__RECURSIVE_SUGGESTIONS, results);
     }
 }
