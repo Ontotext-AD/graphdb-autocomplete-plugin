@@ -16,6 +16,7 @@ import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Triple;
 import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.rio.helpers.NTriplesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.channels.ClosedByInterruptException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -136,7 +138,7 @@ class AutocompleteIndex {
     long getWeight(long id, String localName) {
         RDFRankProvider rdfRankPlugin = getRDFRankProvider();
         double rank = 0;
-        if (rdfRankPlugin != null) {
+        if (rdfRankPlugin != null && id > 0) {
             rank = rdfRankPlugin.getNormalizedRank(id);
         }
 
@@ -166,6 +168,24 @@ class AutocompleteIndex {
         } else {
             bb.append((byte) 0);
         }
+
+        return bb.get();
+    }
+
+    BytesRef getIRIAsPayload(IRI iri, boolean isLabel) {
+        BytesRefBuilder bb = new BytesRefBuilder();
+        // A mock entity ID that is always zero
+        bb.append(Longs.toByteArray(0), 0, Long.BYTES);
+
+        if (isLabel) {
+            bb.append((byte) 1);
+        } else {
+            bb.append((byte) 0);
+        }
+
+        // The IRI as a string represented as UTF-8 bytes
+        final byte[] bytes = iri.stringValue().getBytes(StandardCharsets.UTF_8);
+        bb.append(bytes, 0, bytes.length);
 
         return bb.get();
     }
@@ -240,6 +260,7 @@ class AutocompleteIndex {
                         List<InputIterator> iterators = new ArrayList<>();
 
                         if (autocompletePlugin.actualShouldIndexIRIs) {
+                            iterators.add(new WellKnownEntitiesIterator(that));
                             iterators.add(new EntitiesIterator(threadsafeEntities, that));
                         }
 
@@ -387,10 +408,17 @@ class AutocompleteIndex {
                 continue;
             }
             long id = Longs.fromByteArray(result.payload.bytes);
-            Value val = entities.get(id);
-            if (val == null) {
-                // Value might be missing because we indexed but the entity was rolled back.
-                continue;
+            Value val;
+            if (id == 0) {
+                // Indexed an IRI that has no entity id, get it from payload
+                String iri = new String(result.payload.bytes, 9, result.payload.bytes.length - 9, StandardCharsets.UTF_8);
+                val = SimpleValueFactory.getInstance().createIRI(iri);
+            } else {
+                val = entities.get(id);
+                if (val == null) {
+                    // Value might be missing because we indexed but the entity was rolled back.
+                    continue;
+                }
             }
             if (!(val instanceof IRI || val instanceof Triple)) {
                 LOGGER.error("Oops, found a non URI or Triple in results. This should not happen: " + id + " => " + val);

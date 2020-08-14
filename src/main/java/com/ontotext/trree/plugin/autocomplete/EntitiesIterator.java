@@ -10,24 +10,17 @@ import java.io.IOException;
 import java.util.Set;
 
 /**
- * Created by desislava on 12/11/15.
+ * Iterates over all data entities in the repository. These entities if stored in the autocomplete index will have
+ * the following payload:
+ * - 8 bytes representing the entity long ID
+ * - 1 byte representing whether a label was indexed (always 0/false in this iterator)
  */
-class EntitiesIterator implements InputIterator {
-
+class EntitiesIterator extends AbstractEntitiesIterator {
     private final Entities entities;
-    private long currentIteratorIndex = 0L;
-    private IRI currentURI;
-    private String currentLocalName;
-    private final AutocompleteIndex autocompleteIndex;
 
     EntitiesIterator(Entities entities, AutocompleteIndex autocompleteIndex) {
-        this.autocompleteIndex = autocompleteIndex;
+        super(autocompleteIndex);
         this.entities = entities;
-    }
-
-    @Override
-    public long weight() {
-        return autocompleteIndex.getWeight(currentIteratorIndex, currentLocalName);
     }
 
     @Override
@@ -36,22 +29,7 @@ class EntitiesIterator implements InputIterator {
     }
 
     @Override
-    public boolean hasPayloads() {
-        return true;
-    }
-
-    @Override
-    public Set<BytesRef> contexts() {
-        return autocompleteIndex.getURINamespaceAsContext(currentURI);
-    }
-
-    @Override
-    public boolean hasContexts() {
-        return true;
-    }
-
-    @Override
-    public BytesRef next() throws IOException {
+    public BytesRef next() {
         while (++currentIteratorIndex <= entities.size() && !autocompleteIndex.isShouldInterrupt()) {
             Value v = entities.get(currentIteratorIndex);
             if (v instanceof IRI) {

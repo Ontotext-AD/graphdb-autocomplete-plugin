@@ -30,14 +30,14 @@ public class TestAutocompleteQueries extends AutocompletePluginTestBase {
 
     @Test
     public void testCreateAutocompleteIndex() throws OpenRDFException {
-        executeQueryAndVerifyResults("Sam", 1);
+        executeQueryAndVerifyResults("Same", 1);
     }
 
     @Test
     public void shouldAutocompleteLocalNameWithoutPrefix() throws RepositoryException, MalformedQueryException, QueryEvaluationException {
-        connection.add(vf.createIRI("s:1"), vf.createIRI("p:1"), vf.createIRI("a:abcde"));
-        connection.add(vf.createIRI("s:1"), vf.createIRI("p:2"), vf.createIRI("b:abcab"));
-        executeQueryAndVerifyResults("ab", 2);
+        connection.add(vf.createIRI("s:1"), vf.createIRI("p:1"), vf.createIRI("a:xabcde"));
+        connection.add(vf.createIRI("s:1"), vf.createIRI("p:2"), vf.createIRI("b:xabcab"));
+        executeQueryAndVerifyResults("xab", 2);
 
     }
 

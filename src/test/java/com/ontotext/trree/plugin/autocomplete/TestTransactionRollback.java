@@ -33,9 +33,9 @@ public class TestTransactionRollback extends AutocompletePluginTestBase {
     @Test
     public void testRollback() {
         // Add some entities and check they are there
-        connection.add(vf.createIRI("s:1"), vf.createIRI("p:1"), vf.createIRI("a:abcde"));
-        connection.add(vf.createIRI("s:1"), vf.createIRI("p:2"), vf.createIRI("b:abcab"));
-        executeQueryAndVerifyResults("ab", 2);
+        connection.add(vf.createIRI("s:1"), vf.createIRI("p:1"), vf.createIRI("a:xabcde"));
+        connection.add(vf.createIRI("s:1"), vf.createIRI("p:2"), vf.createIRI("b:xabcab"));
+        executeQueryAndVerifyResults("xab", 2);
 
         try {
             connection.begin();
@@ -47,16 +47,16 @@ public class TestTransactionRollback extends AutocompletePluginTestBase {
             connection.rollback();
         }
 
-        executeQueryAndVerifyResults("ab", 2);
+        executeQueryAndVerifyResults("xab", 2);
 
         // Add more
-        connection.add(vf.createIRI("s:1"), vf.createIRI("p:2"), vf.createIRI("b:abxnl"));
-        executeQueryAndVerifyResults("ab", 3);
+        connection.add(vf.createIRI("s:1"), vf.createIRI("p:2"), vf.createIRI("b:xabxnl"));
+        executeQueryAndVerifyResults("xab", 3);
 
         // Add more but rollback the transaction, the newly added entities shouldn't be in the autocomplete index
         connection.begin();
-        connection.add(vf.createIRI("s:1"), vf.createIRI("p:3"), vf.createIRI("b:abqxy"));
+        connection.add(vf.createIRI("s:1"), vf.createIRI("p:3"), vf.createIRI("b:xabqxy"));
         connection.rollback();
-        executeQueryAndVerifyResults("ab", 3);
+        executeQueryAndVerifyResults("xab", 3);
     }
 }
