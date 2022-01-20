@@ -1,6 +1,6 @@
 package com.ontotext.trree.plugin.autocomplete;
 
-import org.eclipse.rdf4j.OpenRDFException;
+import org.eclipse.rdf4j.common.exception.RDF4JException;
 import org.eclipse.rdf4j.query.MalformedQueryException;
 import org.eclipse.rdf4j.query.QueryEvaluationException;
 import org.eclipse.rdf4j.repository.RepositoryException;
@@ -29,7 +29,7 @@ public class TestAutocompleteQueries extends AutocompletePluginTestBase {
     }
 
     @Test
-    public void testCreateAutocompleteIndex() throws OpenRDFException {
+    public void testCreateAutocompleteIndex() throws RDF4JException {
         executeQueryAndVerifyResults("Same", 1);
     }
 
@@ -42,7 +42,7 @@ public class TestAutocompleteQueries extends AutocompletePluginTestBase {
     }
 
     @Test
-    public void shouldAutocompleteLocalNameWithPrefix() throws OpenRDFException {
+    public void shouldAutocompleteLocalNameWithPrefix() throws RDF4JException {
         connection.add(vf.createIRI("prefix:hijk"), vf.createIRI("prefix:2"), vf.createIRI("http://ontotext.com/ffff"));
         // Unfortunately setting offsets in LocalNameTokenizer breaks the one char autocomplete
         executeQueryAndVerifyResults("prefix:;h" , 1);

@@ -29,10 +29,6 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public abstract class AutocompletePluginTestBase extends SingleRepositoryFunctionalTest {
-	static {
-		System.setProperty("graphdb.license.file", System.getProperty("user.dir") + "/graphdb.license");
-	}
-
 	private static final Logger LOG = LoggerFactory.getLogger(AutocompletePluginTestBase.class);
 
 	private static final String AUTOCOMPLETE_QUERY_START = "SELECT ?s ?g WHERE { GRAPH ?g { ?s <http://www.ontotext.com/plugins/autocomplete#query> \"";
@@ -235,7 +231,7 @@ public abstract class AutocompletePluginTestBase extends SingleRepositoryFunctio
 	void restartRepository() {
 		connection.close();
 		getRepository().shutDown();
-		getRepository().initialize();
+		getRepository().init();
 		connection = getRepository().getConnection();
 	}
 
