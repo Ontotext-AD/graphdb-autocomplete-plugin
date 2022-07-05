@@ -92,4 +92,11 @@ public class TestAutocompleteQueries extends AutocompletePluginTestBase {
     public void shouldNotAutocompleteSpecialURIs() throws RepositoryException, MalformedQueryException, QueryEvaluationException {
         executeQueryAndVerifyResults("http://www.ontotext.com/;", 0);
     }
+
+    @Test
+    public void shouldAutocompleteWhenLocaleNameHasTwoWords() throws RepositoryException, MalformedQueryException, QueryEvaluationException {
+        //connection.add(vf.createIRI("wine1:WhiteBURgundy"), vf.createIRI("sto:hasHeadquarterIn"), vf.createIRI("wine1:ChardonnayGrape"));
+        connection.add(vf.createIRI("wine1:WhiteBURgundy"), vf.createIRI("sto:hasPagees"), vf.createIRI("wine1:ChardonnayGrape"));
+        executeQueryAndVerifyResults("sto:;hasHu", 1);
+    }
 }
