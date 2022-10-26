@@ -8,15 +8,15 @@
     <version>4.2-SNAPSHOT</version>
 
     <properties>
-        <graphdb.version>10.0.0</graphdb.version>
+        <graphdb.version>10.1.0-RC3</graphdb.version>
 
         <java.level>1.8</java.level>
 
         <lucene.version>8.2.0</lucene.version>
         <dependency.check.version>6.2.2</dependency.check.version>
 
-        <internal.repo>http://maven.ontotext.com/content/repositories/owlim-releases</internal.repo>
-        <snapshots.repo>http://maven.ontotext.com/content/repositories/owlim-snapshots</snapshots.repo>
+        <internal.repo>https://maven.ontotext.com/content/repositories/owlim-releases</internal.repo>
+        <snapshots.repo>https://maven.ontotext.com/content/repositories/owlim-snapshots</snapshots.repo>
 
         <!-- Empty defaults to keep things happy, argLine can be overridden on command line,
             extraArgLine may be overridden by one of the profiles. -->
@@ -107,7 +107,7 @@
         <repository>
             <id>owlim-releases</id>
             <name>GraphDB Releases</name>
-            <url>http://maven.ontotext.com/repository/owlim-releases</url>
+            <url>https://maven.ontotext.com/repository/owlim-releases</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -195,6 +195,13 @@
             <artifactId>graphdb-runtime</artifactId>
             <version>${graphdb.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <!-- These are from the FTS functionality and should not be included as they break the plugins -->
+                <exclusion>
+                    <groupId>org.apache.lucene</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- RDF Rank plugin needed as dependency for the test that tests integration with it -->
@@ -210,6 +217,13 @@
             <artifactId>graphdb-tests-base</artifactId>
             <version>${graphdb.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <!-- These are from the FTS functionality and should not be included as they break the plugins -->
+                <exclusion>
+                    <groupId>org.apache.lucene</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
