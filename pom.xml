@@ -8,12 +8,12 @@
     <version>4.2-SNAPSHOT</version>
 
     <properties>
-        <graphdb.version>10.1.0-RC3</graphdb.version>
+        <graphdb.version>10.2.1</graphdb.version>
 
         <java.level>1.8</java.level>
 
-        <lucene.version>8.2.0</lucene.version>
-        <dependency.check.version>6.2.2</dependency.check.version>
+        <lucene.version>8.11.2</lucene.version>
+        <dependency.check.version>8.2.1</dependency.check.version>
 
         <internal.repo>https://maven.ontotext.com/content/repositories/owlim-releases</internal.repo>
         <snapshots.repo>https://maven.ontotext.com/content/repositories/owlim-snapshots</snapshots.repo>
@@ -133,7 +133,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.3.2</version>
+            <version>3.12.0</version>
             <!-- Provided by GraphDB -->
             <scope>provided</scope>
         </dependency>
@@ -149,7 +149,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>29.0-jre</version>
+            <version>31.1-jre</version>
             <!-- Provided by GraphDB -->
             <scope>provided</scope>
         </dependency>
