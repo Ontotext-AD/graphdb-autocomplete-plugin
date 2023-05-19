@@ -5,7 +5,7 @@
 
     <groupId>com.ontotext.graphdb.plugins</groupId>
     <artifactId>autocomplete-plugin</artifactId>
-    <version>4.2-SNAPSHOT</version>
+    <version>4.2.1-HF1</version>
 
     <properties>
         <graphdb.version>10.2.1</graphdb.version>
@@ -312,6 +312,6 @@
         <connection>scm:git:git@github.com:Ontotext-AD/graphdb-autocomplete-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:Ontotext-AD/graphdb-autocomplete-plugin.git</developerConnection>
         <url>https://github.com/Ontotext-AD/graphdb-autocomplete-plugin</url>
-        <tag>HEAD</tag>
+        <tag>4.2.1-HF1</tag>
     </scm>
 </project>
