@@ -16,8 +16,7 @@ import static org.junit.Assert.assertEquals;
 public class TestAutocompleteRDFStar extends AutocompletePluginTestBase {
 
     private static final List<String> EXPECTED_SUGGESTIONS = Arrays.asList(
-
-            "<<<http://test/a> <http://test/b> <http://test/c>>>; label for <b>sim</b>ple triple &lt;&lt;&lt;http://test/a&gt; &lt;http://test/b&gt; &lt;http://test/c&gt;&gt;&gt;"
+            "<<<http://test/a> <http://test/b> <http://test/c>>>; label for simple and <b>testa</b>ble triple &lt;&lt;&lt;http://test/a&gt; &lt;http://test/b&gt; &lt;http://test/c&gt;&gt;&gt;"
     );
 
     private static final List<String> EXPECTED__RECURSIVE_SUGGESTIONS = Arrays.asList(
@@ -44,7 +43,7 @@ public class TestAutocompleteRDFStar extends AutocompletePluginTestBase {
 
 
     public void testFindIRIsByLabels() throws RepositoryException, MalformedQueryException, QueryEvaluationException {
-        List<String> results = executeQueryAndGetResults(";sim");
+        List<String> results = executeQueryAndGetResults(";testa");
         assertEquals(EXPECTED_SUGGESTIONS, results);
         results = executeQueryAndGetResults(";recur");
         assertEquals(EXPECTED__RECURSIVE_SUGGESTIONS, results);

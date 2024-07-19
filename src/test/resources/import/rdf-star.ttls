@@ -1,5 +1,5 @@
 @prefix ex: <http://test/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-<<ex:a ex:b ex:c>> rdfs:label "label for simple triple" .
+<<ex:a ex:b ex:c>> rdfs:label "label for simple and testable triple" .
 <<ex:foo rdfs:label "moo most inner">>  rdfs:label "label for recursive nested triple".
