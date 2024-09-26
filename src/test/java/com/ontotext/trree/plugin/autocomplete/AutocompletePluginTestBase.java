@@ -28,6 +28,9 @@ import static org.junit.Assert.assertTrue;
 public abstract class AutocompletePluginTestBase extends SingleRepositoryFunctionalTest {
 	private static final Logger LOG = LoggerFactory.getLogger(AutocompletePluginTestBase.class);
 	private static final String AUTOCOMPLETE_QUERY_START = "SELECT ?s ?g WHERE { GRAPH ?g { ?s <http://www.ontotext.com/plugins/autocomplete#query> \"";
+	private static final String AUTOCOMPLETE_QUERY_UNBOUNDED_OBJECT_EMPTY = "SELECT * WHERE { ?entity <http://www.ontotext.com/plugins/autocomplete#query> ?query . }";
+	private static final String AUTOCOMPLETE_QUERY_UNBOUNDED_OBJECT_START = "SELECT ?s ?g WHERE { GRAPH ?g { VALUES ?q {\"";
+	private static final String AUTOCOMPLETE_QUERY_UNBOUNDED_OBJECT_END = "\"} ?s <http://www.ontotext.com/plugins/autocomplete#query> ?q } }";
 	private static final String GET_INDEX_STATUS = "SELECT ?s WHERE { ?o <http://www.ontotext.com/plugins/autocomplete#status> ?s . }";
 	private static final String IS_PLUGIN_ENABLED = "ASK WHERE { ?o <http://www.ontotext.com/plugins/autocomplete#enabled> ?s . }";
 	private static final String SHOULD_INDEX_IRIS = "ASK WHERE { ?o <http://www.ontotext.com/plugins/autocomplete#indexIRIs> ?s . }";
@@ -164,6 +167,18 @@ public abstract class AutocompletePluginTestBase extends SingleRepositoryFunctio
 		TupleQuery tq = connection.prepareTupleQuery(QueryLanguage.SPARQL, sparqlQuery);
 		List<String> foundSubjects = getFoundSubjects(tq.evaluate());
 		assertEquals(expected, foundSubjects.size());
+	}
+	void executeQueryWithUnboundedObjectAndVerifyResults(String pluginQuery, int expected) throws RepositoryException, MalformedQueryException, QueryEvaluationException {
+		String copyQuery = AUTOCOMPLETE_QUERY_UNBOUNDED_OBJECT_START + pluginQuery + AUTOCOMPLETE_QUERY_UNBOUNDED_OBJECT_END;
+		TupleQuery tq = connection.prepareTupleQuery(QueryLanguage.SPARQL, copyQuery);
+		List<String> foundSubjects = getFoundSubjects(tq.evaluate());
+		assertEquals(expected, foundSubjects.size());
+	}
+	void executeQueryWithUnboundedObjectAndVerifyNoExceptionIsThrown() throws RepositoryException, MalformedQueryException, QueryEvaluationException  {
+		TupleQuery tq = connection.prepareTupleQuery(QueryLanguage.SPARQL, AUTOCOMPLETE_QUERY_UNBOUNDED_OBJECT_EMPTY);
+		List<String> foundSubjects = getFoundSubjects(tq.evaluate());
+		// must always return empty due to the StatementIterator.FALSE
+		assertEquals(0, foundSubjects.size());
 	}
 	List<String> executeQueryAndGetResults(String pluginQuery) throws RepositoryException, MalformedQueryException, QueryEvaluationException {
 		String sparqlQuery = AUTOCOMPLETE_QUERY_START + pluginQuery + "\" . } }";
