@@ -92,4 +92,18 @@ public class TestAutocompleteQueries extends AutocompletePluginTestBase {
     public void shouldNotAutocompleteSpecialURIs() throws RepositoryException, MalformedQueryException, QueryEvaluationException {
         executeQueryAndVerifyResults("http://www.ontotext.com/;", 0);
     }
+
+    @Test
+    public void shouldNotThrowExceptionWhenCallingAutocompleteOnUnboundObject() throws RepositoryException,
+            MalformedQueryException, QueryEvaluationException {
+        executeQueryWithUnboundedObjectAndVerifyNoExceptionIsThrown();
+    }
+
+    @Test
+    public void shouldNotThrowExceptionWhenCallingAutocompleteOnUnboundObjectThenAutocomplete() throws RepositoryException,
+            MalformedQueryException, QueryEvaluationException {
+        connection.add(vf.createIRI("wine1:WhiteBurgundy"), vf.createIRI("wine1:madeFromGrape"), vf.createIRI("wine1:ChardonnayGrape"));
+        connection.add(vf.createIRI("wine2:SauvignonBlanc"), vf.createIRI("wine2:madeFromGrape"), vf.createIRI("wine2:Semillion"));
+        executeQueryWithUnboundedObjectAndVerifyResults("wine1:;bu\" \"wine2:;sau", 2);
+    }
 }

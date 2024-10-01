@@ -166,6 +166,14 @@ public class AutocompletePlugin extends PluginBase
         if (predicate != queryPredicateId) {
             return null;
         }
+
+        /* This "if" condition ensures that the Autocomplete plugin can proceed when trying to interpret a triple
+        pattern containing queryPredicateId as a predicate and an unbounded object.
+        See https://ontotext.atlassian.net/browse/GDB-10568. */
+        if (object == Entities.UNBOUND) {
+            return StatementIterator.FALSE();
+        }
+
         String queryStr = pluginConnection.getEntities().get(object).stringValue();
         String namespace = null;
         String query = "";
