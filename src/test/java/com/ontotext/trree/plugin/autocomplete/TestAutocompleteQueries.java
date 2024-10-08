@@ -1,6 +1,9 @@
 package com.ontotext.trree.plugin.autocomplete;
 
 import org.eclipse.rdf4j.common.exception.RDF4JException;
+import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Literal;
+import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.query.MalformedQueryException;
 import org.eclipse.rdf4j.query.QueryEvaluationException;
 import org.eclipse.rdf4j.repository.RepositoryException;
@@ -9,6 +12,7 @@ import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.util.List;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by desislava on 11/11/15.
@@ -105,5 +109,42 @@ public class TestAutocompleteQueries extends AutocompletePluginTestBase {
         connection.add(vf.createIRI("wine1:WhiteBurgundy"), vf.createIRI("wine1:madeFromGrape"), vf.createIRI("wine1:ChardonnayGrape"));
         connection.add(vf.createIRI("wine2:SauvignonBlanc"), vf.createIRI("wine2:madeFromGrape"), vf.createIRI("wine2:Semillion"));
         executeQueryWithUnboundedObjectAndVerifyResults("wine1:;bu\" \"wine2:;sau", 2);
+    }
+
+    @Test
+    public void shouldAutocompleteQueriesAndReturnSameResult() throws RepositoryException, MalformedQueryException,
+            QueryEvaluationException {
+        IRI whiteBurgundy = vf.createIRI("wine1:WhiteBurgundy");
+        IRI madeFromGrape = vf.createIRI("wine1:madeFromGrape");
+        IRI chardonnayGrape = vf.createIRI("wine1:ChardonnayGrape");
+        Literal labelName = vf.createLiteral("wine1:WhiteWine");
+
+        connection.add(whiteBurgundy, madeFromGrape, chardonnayGrape);
+        connection.add(whiteBurgundy, RDF.TYPE, labelName);
+
+        IRI sauvignonBlanc = vf.createIRI("wine1:WhiteBurgundy");
+        IRI semillion = vf.createIRI("wine1:ChardonnayGrape");
+
+        connection.add(sauvignonBlanc, madeFromGrape, semillion);
+        connection.add(whiteBurgundy, RDF.TYPE, labelName);
+
+        String valueToBeAutocompleted = "wine1:;bu"; // the wine we are querying for
+
+        String orderedQueryStart = "SELECT ?s WHERE { ?s <http://www.ontotext.com/plugins/autocomplete#query> \"";
+        String orderedQueryEnd = "\" ;  }";
+
+        String unorderedQueryStart = "SELECT ?s WHERE { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?value " +
+                "; <http://www.ontotext.com/plugins/autocomplete#query> \"";
+        String unorderedQueryEnd = "\" }";
+
+        List<String> resultsFromOrderedQuery = executeCustomQueryAndGetResults(orderedQueryStart, orderedQueryEnd,
+                valueToBeAutocompleted);
+        List<String> resultsFromUnorderedQuery = executeCustomQueryAndGetResults(unorderedQueryStart, unorderedQueryEnd,
+                valueToBeAutocompleted);
+
+        /* Both queries should wield the same result, regardless of the positioning of the autocomplete index call
+         * in the queries themselves. This ensures that there's no "good" or "bad" optimization plan depending solely
+         * on where the autocomplete call is placed by a user when writing a query. */
+        assertEquals(resultsFromOrderedQuery, resultsFromUnorderedQuery);
     }
 }

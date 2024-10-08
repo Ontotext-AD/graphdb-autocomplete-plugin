@@ -115,6 +115,9 @@ public class AutocompletePlugin extends PluginBase
     public double estimate(long subject, long predicate, long object, long context, PluginConnection pluginConnection,
                            RequestContext requestContext) {
         if (predicate == queryPredicateId || context == controlContextId)  {
+            if (subject == Entities.UNBOUND) {
+                return Double.MIN_VALUE;
+            }
             return Double.POSITIVE_INFINITY;
         } else {
             return 0;
