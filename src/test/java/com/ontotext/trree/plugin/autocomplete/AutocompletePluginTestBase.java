@@ -185,6 +185,12 @@ public abstract class AutocompletePluginTestBase extends SingleRepositoryFunctio
 		TupleQuery tq = connection.prepareTupleQuery(QueryLanguage.SPARQL, sparqlQuery);
 		return getFoundSubjects(tq.evaluate());
 	}
+	List<String> executeCustomQueryAndGetResults(String sparqlQueryStart, String sparqlQueryEnd, String pluginQuery)
+			throws RepositoryException, MalformedQueryException, QueryEvaluationException {
+		String finalQuery = sparqlQueryStart + pluginQuery + sparqlQueryEnd;
+		TupleQuery tq = connection.prepareTupleQuery(QueryLanguage.SPARQL, finalQuery);
+		return getFoundSubjects(tq.evaluate());
+	}
 	void importData(String fileName, RDFFormat format) throws RepositoryException, IOException, RDFParseException {
 		connection.begin();
 		connection.add(new File(fileName), "urn:base", format);
