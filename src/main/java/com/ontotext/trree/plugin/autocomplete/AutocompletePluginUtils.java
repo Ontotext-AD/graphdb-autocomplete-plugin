@@ -52,7 +52,7 @@ class AutocompletePluginUtils {
                     Properties properties = new Properties();
                     loadPropertyFile(properties, legacyConfigFile);
                     if (isPluginEnabledFromProperties(properties)) {
-                        logger.info("Detected incompatible index from a previous version. Please rebuild the index manually.");
+                        logger.warn("Detected incompatible index from a previous version. Please rebuild the index manually.");
                         setPluginEnabledInProperties(properties, false);
                     }
                     updatePluginConfiguration(resolveConfigDirectory(pluginDataDir, false).toFile(), properties);
@@ -96,7 +96,7 @@ class AutocompletePluginUtils {
             }
         }
         if (!wasLoaded) {
-            LOG.info(">>>>>>>> AutocompletePlugin: No configuration file found at {}. " +
+            LOG.debug(">>>>>>>> AutocompletePlugin: No configuration file found at {}. " +
                     "Assuming default options for plugin.", pluginConfigFile);
 
             properties.setProperty(AUTOCOMPLETE_ENABLED_PROPERTY, "false");
