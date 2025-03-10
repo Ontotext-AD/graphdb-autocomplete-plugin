@@ -8,7 +8,7 @@
     <version>4.2-SNAPSHOT</version>
 
     <properties>
-        <graphdb.version>10.7.1-RC2</graphdb.version>
+        <graphdb.version>10.8.4</graphdb.version>
 
         <java.level>1.8</java.level>
 
@@ -208,7 +208,7 @@
         <dependency>
             <groupId>com.ontotext.graphdb.plugins</groupId>
             <artifactId>rdfrank-plugin</artifactId>
-            <version>1.0.0-RC1</version>
+            <version>1.2.0</version>
             <scope>test</scope>
         </dependency>
 
