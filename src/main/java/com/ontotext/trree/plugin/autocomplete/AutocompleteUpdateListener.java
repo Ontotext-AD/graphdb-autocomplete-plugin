@@ -1,7 +1,7 @@
 package com.ontotext.trree.plugin.autocomplete;
 
 import com.ontotext.trree.sdk.*;
-import gnu.trove.TLongObjectHashMap;
+import gnu.trove.map.hash.TLongObjectHashMap;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Value;
 import org.slf4j.Logger;

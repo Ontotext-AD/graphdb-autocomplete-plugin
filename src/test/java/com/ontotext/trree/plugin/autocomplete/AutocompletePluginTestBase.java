@@ -5,7 +5,7 @@ import com.ontotext.test.functional.base.SingleRepositoryFunctionalTest;
 import com.ontotext.test.utils.StandardUtils;
 import org.eclipse.rdf4j.common.io.IOUtil;
 import org.eclipse.rdf4j.model.IRI;
-import org.eclipse.rdf4j.model.Triple;
+import org.eclipse.rdf4j.model.TripleTerm;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.query.*;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
@@ -157,7 +157,7 @@ public abstract class AutocompletePluginTestBase extends SingleRepositoryFunctio
 		return foundSubjects;
 	}
 	private String asNTripleString(Value r) {
-		if (r instanceof Triple) {
+		if (r instanceof TripleTerm) {
 			return NTriplesUtil.toNTriplesString(r);
 		}
 		return r.stringValue();

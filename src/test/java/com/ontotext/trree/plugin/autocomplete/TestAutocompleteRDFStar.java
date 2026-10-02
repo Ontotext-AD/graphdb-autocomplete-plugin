@@ -16,12 +16,11 @@ import static org.junit.Assert.assertEquals;
 public class TestAutocompleteRDFStar extends AutocompletePluginTestBase {
 
     private static final List<String> EXPECTED_SUGGESTIONS = Arrays.asList(
-            "<<<http://test/a> <http://test/b> <http://test/c>>>; label for simple and <b>testa</b>ble triple &lt;&lt;&lt;http://test/a&gt; &lt;http://test/b&gt; &lt;http://test/c&gt;&gt;&gt;"
+            "http://test/rABC; label for simple and <b>testa</b>ble triple &lt;http://test/rABC&gt;"
     );
 
     private static final List<String> EXPECTED__RECURSIVE_SUGGESTIONS = Arrays.asList(
-
-            "<<<http://test/foo> <http://www.w3.org/2000/01/rdf-schema#label> \"moo most inner\">>; label for <b>recur</b>sive nested triple &lt;&lt;&lt;http://test/foo&gt; &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; &quot;moo most inner&quot;&gt;&gt;"
+            "http://test/rFoo; label for <b>recur</b>sive nested triple &lt;http://test/rFoo&gt;"
     );
 
 
@@ -36,7 +35,7 @@ public class TestAutocompleteRDFStar extends AutocompletePluginTestBase {
 
     @Test
     public void loadThenIndex() throws Exception {
-        importData("src/test/resources/import/rdf-star.ttls", RDFFormat.TURTLESTAR);
+        importData("src/test/resources/import/rdf-star.ttls", RDFFormat.TURTLE);
         enablePlugin();
         testFindIRIsByLabels();
     }

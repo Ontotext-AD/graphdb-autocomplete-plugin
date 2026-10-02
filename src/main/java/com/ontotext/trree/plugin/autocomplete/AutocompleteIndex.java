@@ -14,7 +14,7 @@ import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.BytesRefBuilder;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.Triple;
+import org.eclipse.rdf4j.model.TripleTerm;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.rio.helpers.NTriplesUtil;
@@ -420,7 +420,7 @@ class AutocompleteIndex {
                     continue;
                 }
             }
-            if (!(val instanceof IRI || val instanceof Triple)) {
+            if (!(val instanceof IRI || val instanceof TripleTerm)) {
                 LOGGER.error("Oops, found a non URI or Triple in results. This should not happen: " + id + " => " + val);
                 assert false;
                 continue;
